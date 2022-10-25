@@ -2,12 +2,12 @@ from .base import BaseDataModule
 from torchvision import datasets, transforms
 from torch.utils.data import random_split, DataLoader
 
-class MNISTDataModule(BaseDataModule):
+class CelebADataModule(BaseDataModule):
     def __init__(self,
                  params,
                  download=True,
                  ):
-        super(MNISTDataModule, self).__init__()
+        super(CelebADataModule, self).__init__()
         self.params = params
         self.data_dir = params['data_dir']
         self.batch_size = params['batch_size']
@@ -20,24 +20,31 @@ class MNISTDataModule(BaseDataModule):
         self.prepare_data(download)
 
     def data_transforms(self):
-        transform = transforms.Compose([
-            transforms.ToTensor(),
-        ])
+        SetRange = transforms.Lambda(lambda X: 2 * X - 1.)
+
+        if self.params['dataset'] == 'celeba':
+            transform = transforms.Compose([transforms.RandomHorizontalFlip(),
+                                            transforms.CenterCrop(148),
+                                            transforms.Resize(self.params['img_size']),
+                                            transforms.ToTensor(),
+                                            SetRange])
+        else:
+            raise ValueError('Undefined dataset type')
 
         return transform
 
     # Download data
     def prepare_data(self, download=True):
-        datasets.MNIST(self.data_dir, train=True, download=download)
-        datasets.MNIST(self.data_dir, train=False, download=download)
+        datasets.CelebA(self.data_dir, split="train", download=download)
+        datasets.CelebA(self.data_dir, split="test", download=download)
 
     def setup(self, stage=None):
         if stage == "fit" or stage is None:
-            full = datasets.MNIST(self.data_dir, train=True, transform=self.transforms)
+            full = datasets.CelebA(self.data_dir, split="train", transform=self.transforms)
             self.train, self.val = random_split(full, [len(full), 0])
 
         if stage == "test" or stage is None:
-            self.test = datasets.MNIST(self.data_dir, train=False, transform=self.transforms)
+            self.test = datasets.CelebA(self.data_dir, split="test", transform=self.transforms)
 
     def train_dataloader(self):
         return DataLoader(self.train,

@@ -4,7 +4,7 @@ import numpy as np
 from torch.backends import cudnn
 import torch
 from models.model_list import VAE_MODELS
-from data import MNISTDataLoader
+from data import data_list
 from experiment import VAEXperiment
 from pytorch_lightning import Trainer
 from pytorch_lightning.loggers import CSVLogger
@@ -16,7 +16,7 @@ def train(config):
     # Load model
     model = VAE_MODELS[config['model_params']['name']](**config['model_params'])
     experiment = VAEXperiment(model, config['exp_params'])
-    dataloader = MNISTDataLoader.MNISTDataModule(config['exp_params'])
+    dataloader = data_list.DATASET[config['exp_params']['dataset']]
     tt_logger = CSVLogger(
         save_dir=config['logging_params']['save_dir'],
         name=config['logging_params']['name'],
@@ -24,11 +24,8 @@ def train(config):
     runner = Trainer(
         min_epochs=1,
         logger=tt_logger,
-        log_save_interval=100,
-        train_percent_check=1.,
-        val_percent_check=1.,
+        log_every_n_steps=100,
         num_sanity_val_steps=5,
-        early_stop_callback=False,
         **config['trainer_params']
     )
 
