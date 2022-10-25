@@ -6,7 +6,7 @@ class BaseDataModule(pl.LightningDataModule):
                  batch_size=128,
                  num_workers=1,
                  ):
-        super(BaseException, self).__init__()
+        super(BaseDataModule, self).__init__()
         self.data_dir = data_dir
         self.batch_size = batch_size
         self.num_workers = num_workers

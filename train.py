@@ -16,13 +16,13 @@ def train(config):
     # Load model
     model = VAE_MODELS[config['model_params']['name']](**config['model_params'])
     experiment = VAEXperiment(model, config['exp_params'])
-    dataloader = MNISTDataLoader.MNISTDataModule()
+    dataloader = MNISTDataLoader.MNISTDataModule(config['exp_params'])
     tt_logger = CSVLogger(
         save_dir=config['logging_params']['save_dir'],
         name=config['logging_params']['name'],
     )
     runner = Trainer(
-        min_nb_epochs=1,
+        min_epochs=1,
         logger=tt_logger,
         log_save_interval=100,
         train_percent_check=1.,
