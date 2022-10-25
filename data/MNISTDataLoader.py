@@ -1,4 +1,3 @@
-import pytorch_lightning as pl
 from base import BaseDataModule
 from torchvision import datasets, transforms
 from torch.utils.data import random_split, DataLoader

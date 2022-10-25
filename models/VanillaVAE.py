@@ -24,7 +24,9 @@ class VAE(nn.Module):
             hidden_dims = [32, 64, 128, 256, 512]
             logging.warning('Default hidden dims is currently used with output channels: %s', hidden_dims)
 
-        self.encoder = Encoder(hidden_dims)
+        self.encoder = Encoder(in_channels=in_channels,
+                               hidden_dims=hidden_dims,
+                               )
 
         self.mu = nn.Linear(hidden_dims[-1] * 4, latent_dim)
         self.log_var = nn.Linear(hidden_dims[-1] * 4, latent_dim)
@@ -81,7 +83,10 @@ class VAE(nn.Module):
 
 
 class Encoder(nn.Module):
-    def __init__(self, hidden_dims):
+    def __init__(self,
+                 in_channels,
+                 hidden_dims,
+                 ):
         super(Encoder, self).__init__()
 
         layers = []
@@ -126,9 +131,7 @@ class Decoder(nn.Module):
                 )
             )
 
-        self.decoder = nn.Sequential(*layers)
-
-        self.decoder.add_module(nn.Sequential(
+        layers.append(nn.Sequential(
             nn.ConvTranspose2d(hidden_dims[-1],
                                hidden_dims[-1],
                                kernel_size=3,
@@ -146,6 +149,7 @@ class Decoder(nn.Module):
             nn.Tanh(),
             )
         )
+        self.decoder = nn.Sequential(*layers)
 
     def forward(self, z):
         return self.decoder(z)
