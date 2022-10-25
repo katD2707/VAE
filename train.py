@@ -11,7 +11,7 @@ from experiment import VAEXperiment
 import data
 def train(config):
     # Load model
-    model = models.VAE_MODELS[config['model_params']['name']]()
+    model = VAE_MODELS[config['model_params']['name']](**config['model_params'])
     experiment = VAEXperiment(model, config['exp_paraams'])
     dataloader = data.MNISTDataModule()
     tt_logger = CSVLogger(

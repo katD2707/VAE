@@ -1,5 +1,5 @@
-import VanillaVAE
+from .VanillaVAE import *
 
 VAE_MODELS = {
-    'VanillaVAE': VanillaVAE.VAE,
+    'VanillaVAE': VAE,
 }
