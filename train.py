@@ -9,10 +9,12 @@ from pytorch_lightning import Trainer
 from pytorch_lightning.loggers import CSVLogger
 from experiment import VAEXperiment
 import data
+
+
 def train(config):
     # Load model
     model = VAE_MODELS[config['model_params']['name']](**config['model_params'])
-    experiment = VAEXperiment(model, config['exp_paraams'])
+    experiment = VAEXperiment(model, config['exp_params'])
     dataloader = data.MNISTDataModule()
     tt_logger = CSVLogger(
         save_dir=config['logging_params']['save_dir'],

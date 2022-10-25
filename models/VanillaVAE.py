@@ -13,12 +13,12 @@ class VAE(nn.Module):
 
     def __init__(self,
                  in_channels: int,
-                 latent_dims: int,
+                 latent_dim: int,
                  hidden_dims: [] = None,
                  **kwargs) -> None:
         super(VAE, self).__init__()
 
-        self.latent_dims = latent_dims
+        self.latent_dim = latent_dim
 
         if hidden_dims is None:
             hidden_dims = [32, 64, 128, 256, 512]
@@ -26,10 +26,10 @@ class VAE(nn.Module):
 
         self.encoder = Encoder(hidden_dims)
 
-        self.mu = nn.Linear(hidden_dims[-1] * 4, latent_dims)
-        self.log_var = nn.Linear(hidden_dims[-1] * 4, latent_dims)
+        self.mu = nn.Linear(hidden_dims[-1] * 4, latent_dim)
+        self.log_var = nn.Linear(hidden_dims[-1] * 4, latent_dim)
 
-        self.decoder_input = nn.Linear(latent_dims, hidden_dims[-1] * 4)
+        self.decoder_input = nn.Linear(latent_dim, hidden_dims[-1] * 4)
         self.decoder = Decoder(hidden_dims[::-1])
 
         self.flatten = nn.Flatten()
@@ -70,7 +70,7 @@ class VAE(nn.Module):
                  num_samples: int,
                  device):
         z = torch.randn(num_samples,
-                        self.latent_dims)
+                        self.latent_dim)
         z = z.to(device)
 
         samples = self.decode(z)
