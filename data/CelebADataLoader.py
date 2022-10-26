@@ -6,6 +6,7 @@ class CelebADataModule(BaseDataModule):
     def __init__(self,
                  params,
                  download=True,
+                 **kwargs,
                  ):
         super(CelebADataModule, self).__init__()
         self.params = params
@@ -17,7 +18,7 @@ class CelebADataModule(BaseDataModule):
                         'num_workers': self.num_workers,
                         }
         self.transforms = self.data_transforms()
-        self.prepare_data(download)
+        # self.prepare_data(download)
 
     def data_transforms(self):
         SetRange = transforms.Lambda(lambda X: 2 * X - 1.)
@@ -34,7 +35,7 @@ class CelebADataModule(BaseDataModule):
         return transform
 
     # Download data
-    def prepare_data(self, download=True):
+    def prepare_data(self, download=False):
         datasets.CelebA(self.data_dir, split="train", download=download)
         datasets.CelebA(self.data_dir, split="test", download=download)
 

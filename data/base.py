@@ -4,7 +4,6 @@ class BaseDataModule(pl.LightningDataModule):
     def __init__(self):
         super(BaseDataModule, self).__init__()
 
-
     def prepare_data(self):
         raise NotImplementedError
 
